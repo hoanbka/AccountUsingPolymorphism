@@ -1,12 +1,17 @@
-package account;
+package account2;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class Account {
 	private String name;
 	private String userId;
 	private String phoneNumber;
-	private String cardNumber = generateRandomCardNumber();
+	private String cardNumber;
 	private double balance;
 	private int secretPIN;
+	private static final List<String> phonePrefixs = Arrays.asList("091",
+			"092", "094", "097", "098", "016");
 
 	public Account() {
 	}
@@ -58,36 +63,38 @@ public class Account {
 		balance = balance + value;
 	}
 
-	public double withdraw(PaymentStrategy paymentStrategy, double value) {
+	public double withdraw(PaymentStrategy paymentStrategy, double withdrawMoney) {
+		if (withdrawMoney <= 0) {
+			throw new IllegalArgumentException("Withdraw money should be > 0");
+		}
+		if (balance < withdrawMoney) {
+			throw new RuntimeException("Withdraw Money > balance");
+
+		}
 		if (paymentStrategy.isValidInfo(this)) {
-			if (this.balance >= value) {
-				return this.balance -= value;
-			} else {
-				return this.balance;
-			}
-		} else
-			return this.balance;
+			return this.balance -= withdrawMoney;
+		}
+		return this.balance;
 
 	}
 
 	public boolean isRightNumber(String phoneNumber) {
-		if (((phoneNumber.length() == 10) || (phoneNumber.length() == 11))
-				&& (phoneNumber.substring(0, 3).equals("091"))
-				|| (phoneNumber.substring(0, 3).equals("090"))
-				|| (phoneNumber.substring(0, 3).equals("016"))
-				|| (phoneNumber.substring(0, 3).equals("098"))
-				|| (phoneNumber.substring(0, 3).equals("094"))) {
-			for (char c : phoneNumber.toCharArray()) {
-				if (!Character.isDigit(c))
-					return false;
-			}
-			return true;
-		} else
+		String phonePrefix = phoneNumber.substring(0, 3);
+
+		if (!phonePrefixs.contains(phonePrefix) || phoneNumber.length() < 10
+				|| phoneNumber.length() > 11) {
 			return false;
+		}
+
+		for (char c : phoneNumber.toCharArray()) {
+			if (!Character.isDigit(c))
+				return false;
+		}
+		return true;
 	}
 
-	public static String generateRandomCardNumber() {
+	public String generateRandomCardNumber() {
 		CreditCardNumberGenerator cardNumber = new CreditCardNumberGenerator();
-		return cardNumber.generate("123", 10);
+		return this.cardNumber = cardNumber.generate("123", 10);
 	}
 }
