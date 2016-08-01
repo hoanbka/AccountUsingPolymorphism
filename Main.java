@@ -1,4 +1,4 @@
-package account;
+package account2;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -8,8 +8,12 @@ public class Main {
 	static Account acc = new Account("Hoan", "vietcombank", 1234, 0);
 
 	public static void main(String[] args) {
+		acc.generateRandomCardNumber();
 		System.out.println(acc.getCardNumber());
-		acc.deposit(10000);
+
+		System.out.println("Enter money u want to deposit:");
+		double depositMoney = input.nextDouble();
+		acc.deposit(depositMoney);
 
 		while (true) {
 			System.out.println("Set phone number:");
@@ -42,6 +46,7 @@ public class Main {
 				String cardNumber = input.next();
 				pay1.setCardNumber(cardNumber);
 				int count1 = 3;
+
 				while (count1 > 0) {
 					try {
 						System.out.println("PIN:");
